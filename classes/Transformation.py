@@ -1,6 +1,6 @@
 import os
 
-from transformation_functions import svd_reconstruction, fast_ica_reconstruction, ipca_reconstruction
+from ipfml.processing import svd_reconstruction, fast_ica_reconstruction, ipca_reconstruction
 
 # Transformation class to store transformation method of image and get usefull information
 class Transformation():
@@ -47,7 +47,7 @@ class Transformation():
 
         if self.transformation == 'static':
             # param contains the whole path of image
-            path = self.param
+            path = os.path.join(self.param, self.transformation)
 
         return path
 

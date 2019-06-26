@@ -10,7 +10,7 @@ Project which contains dependencies used in few developed projects:
 ## Add as dependency
 
 ```bash
-git add submodule https://github.com/prise-3d/Thesis-DeepLearning-modules.git modules
+git submodule add https://github.com/prise-3d/Thesis-DeepLearning-modules.git modules
 ```
 
 ## License
