@@ -1,11 +1,15 @@
+import os
+
+from PIL import Image
+
 from modules.utils.config import *
+
 
 _scenes_names_prefix   = '_scenes_names'
 _scenes_indices_prefix = '_scenes_indices'
 
 # store all variables from current module context
 context_vars = vars()
-
 
 def get_renderer_scenes_indices(renderer_name):
 
@@ -26,3 +30,27 @@ def get_renderer_scenes_names(renderer_name):
         return scenes_names
     else:
         return context_vars[renderer_name + _scenes_names_prefix]
+
+
+def augmented_data_image(block, output_folder, prefix_image_name):
+
+    rotations = [0, 90, 180, 270]
+    img_flip_labels = ['original', 'horizontal', 'vertical', 'both']
+
+    horizontal_img = block.transpose(Image.FLIP_LEFT_RIGHT)
+    vertical_img = block.transpose(Image.FLIP_TOP_BOTTOM)
+    both_img = block.transpose(Image.TRANSPOSE)
+
+    flip_images = [block, horizontal_img, vertical_img, both_img]
+
+    # rotate and flip image to increase dataset size
+    for id, flip in enumerate(flip_images):
+        for rotation in rotations:
+            rotated_output_img = flip.rotate(rotation)
+
+            output_reconstructed_filename = prefix_image_name + post_image_name_separator
+            output_reconstructed_filename = output_reconstructed_filename + img_flip_labels[id] + '_' + str(rotation) + '.png'
+            output_reconstructed_path = os.path.join(output_folder, output_reconstructed_filename)
+
+            if not os.path.exists(output_reconstructed_path):
+                rotated_output_img.save(output_reconstructed_path)
