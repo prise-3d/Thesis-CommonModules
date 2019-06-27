@@ -46,10 +46,8 @@ class Transformation():
             path = os.path.join(path, 'N' + str(n_components))
 
         if self.transformation == 'static':
-            # param contains the whole path of image
-            last_element = self.param.split('/')[-1] 
-            output_path = self.param.replace(last_element, '')
-            path = os.path.join(output_path, self.transformation, last_element)
+            # param contains image name to find for each scene
+            path = self.param
 
         return path
 
