@@ -1,19 +1,4 @@
-from ipfml import processing, metrics, utils
 from modules.utils.config import *
-from transformation_functions import svd_reconstruction
-
-from PIL import Image
-from skimage import color
-from sklearn.decomposition import FastICA
-from sklearn.decomposition import IncrementalPCA
-from sklearn.decomposition import TruncatedSVD
-from numpy.linalg import svd as lin_svd
-
-from scipy.signal import medfilt2d, wiener, cwt
-import pywt
-
-import numpy as np
-
 
 _scenes_names_prefix   = '_scenes_names'
 _scenes_indices_prefix = '_scenes_indices'
@@ -41,4 +26,3 @@ def get_renderer_scenes_names(renderer_name):
         return scenes_names
     else:
         return context_vars[renderer_name + _scenes_names_prefix]
-
