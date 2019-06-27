@@ -1,6 +1,6 @@
 import os
 
-from ipfml.processing import svd_reconstruction, fast_ica_reconstruction, ipca_reconstruction
+from ipfml.processing import reconstruction
 
 # Transformation class to store transformation method of image and get usefull information
 class Transformation():
@@ -13,15 +13,15 @@ class Transformation():
 
         if self.transformation == 'svd_reconstruction':
             begin, end = list(map(int, self.param.split(',')))
-            data = svd_reconstruction(img, [begin, end])
+            data = reconstruction.svd(img, [begin, end])
 
         if self.transformation == 'ipca_reconstruction':
             n_components, batch_size = list(map(int, self.param.split(',')))
-            data = ipca_reconstruction(img, n_components, batch_size)
+            data = reconstruction.ipca(img, n_components, batch_size)
 
         if self.transformation == 'fast_ica_reconstruction':
             n_components = self.param
-            data = fast_ica_reconstruction(img, n_components)
+            data = reconstruction.fast_ica(img, n_components)
 
         if self.transformation == 'static':
             # static content, we keep input as it is
@@ -47,7 +47,9 @@ class Transformation():
 
         if self.transformation == 'static':
             # param contains the whole path of image
-            path = os.path.join(self.param, self.transformation)
+            last_element = self.param.split('/')[-1] 
+            output_path = self.param.replace(last_element, '')
+            path = os.path.join(output_path, self.transformation, last_element)
 
         return path
 
