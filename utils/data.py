@@ -2,7 +2,7 @@ import os
 
 from PIL import Image
 
-from modules.utils.config import *
+from ..config.cnn_config import *
 
 
 _scenes_names_prefix   = '_scenes_names'
