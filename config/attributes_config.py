@@ -1,4 +1,4 @@
-from . import metrics_config
+from .metrics_config import *
 
 # store all variables from metrics config
 context_vars = vars()
