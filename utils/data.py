@@ -34,10 +34,20 @@ def get_renderer_scenes_names(renderer_name):
 
 def get_scene_image_quality(img_path):
 
+    # if path getting last element (image name) and extract quality
     img_postfix = img_path.split('/')[-1].split(scene_image_quality_separator)[-1]
     img_quality = img_postfix.replace(scene_image_extension, '')
 
-    return img_quality
+    return int(img_quality)
+
+
+def get_scene_image_prefix(img_path):
+
+    # if path getting last element (image name) and extract prefix
+    img_prefix = img_path.split('/')[-1].split(scene_image_quality_separator)[0]
+
+    return img_prefix
+
 
 def augmented_data_image(block, output_folder, prefix_image_name):
 
