@@ -15,6 +15,7 @@ learned_zones_folder            = 'learned_zones'
 csv_model_comparisons_filename  = 'models_comparisons.csv'
 seuil_expe_filename             = 'seuilExpe'
 config_filename                 = 'config'
+min_max_filename_extension      = '_min_max_values'
 
 # variables 
 renderer_choices                = ['all', 'maxwell', 'igloo', 'cycle']
