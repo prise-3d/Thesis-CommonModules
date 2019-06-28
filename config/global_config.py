@@ -35,3 +35,5 @@ cycle_scenes_indices            = ['E', 'I']
 zones_indices                   = np.arange(16)
 
 # parameters
+scene_image_quality_separator     = '_'
+scene_image_extension             = '.png'
