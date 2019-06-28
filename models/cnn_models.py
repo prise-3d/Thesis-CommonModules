@@ -8,7 +8,6 @@ import tensorflow as tf
 from modules.utils import config as cfg
 from modules.models import metrics
 
-
 def generate_model_2D(_input_shape):
 
     model = Sequential()
