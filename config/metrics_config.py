@@ -1,4 +1,4 @@
-from config.global_config import *
+from . import global_config
 
 # store all variables from global config
 context_vars = vars()
