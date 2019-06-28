@@ -32,6 +32,13 @@ def get_renderer_scenes_names(renderer_name):
         return context_vars[renderer_name + _scenes_names_prefix]
 
 
+def get_scene_image_quality(img_path):
+
+    img_postfix = img_path.split('/')[-1].split(scene_image_quality_separator)[-1]
+    img_quality = img_postfix.replace(scene_image_extension, '')
+
+    return img_quality
+
 def augmented_data_image(block, output_folder, prefix_image_name):
 
     rotations = [0, 90, 180, 270]
