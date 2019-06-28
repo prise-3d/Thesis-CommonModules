@@ -1,4 +1,4 @@
-from config.global_config import *
+from . import global_config
 
 # store all variables from global config
 context_vars = vars()
@@ -11,7 +11,7 @@ not_noisy_folder                = 'notNoisy'
 post_image_name_separator       = '___'
 
 # variables
-features_choices_labels         = ['all',  'static', 'svd_reconstruction', 'fast_ica_reconstruction', 'ipca_reconstruction']
+features_choices_labels         = ['static', 'svd_reconstruction', 'fast_ica_reconstruction', 'ipca_reconstruction']
 
 # parameters
 keras_epochs                    = 30

@@ -5,8 +5,12 @@ from keras.layers import Activation, Dropout, Flatten, Dense, BatchNormalization
 from keras import backend as K
 import tensorflow as tf
 
-from modules.utils import config as cfg
-from modules.models import metrics
+# trick to enable import of config
+import sys
+sys.path.insert(0, '..')
+
+from . import metrics
+from config import cnn_config as cfg
 
 def generate_model_2D(_input_shape):
 
