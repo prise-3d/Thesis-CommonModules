@@ -9,8 +9,6 @@ Project which contains dependencies used in few developed projects:
 - [Noise Detection attributes](https://github.com/prise-3d/Thesis-NoiseDetection-attributes.git)
 - [Noise Detection 26 attributes](https://github.com/prise-3d/Thesis-NoiseDetection-26-attributes.git)
 
-TODO : add others projects references
-
 ## Configuration file
 
 There is few configuration files (`config` folder):
@@ -26,4 +24,4 @@ git submodule add https://github.com/prise-3d/Thesis-CommonModules.git modules
 
 ## License
 
-[The MIT License](https://github.com/prise-3d/Thesis-DeepLearning-modules/blob/master/LICENSE)
+[The MIT License](https://github.com/prise-3d/Thesis-CommonModules/blob/master/LICENSE)
