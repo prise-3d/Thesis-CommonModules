@@ -14,7 +14,6 @@ learned_zones_folder            = 'learned_zones'
 # files or extensions
 csv_model_comparisons_filename  = 'models_comparisons.csv'
 seuil_expe_filename             = 'seuilExpe'
-config_filename                 = 'config'
 min_max_filename_extension      = '_min_max_values'
 
 # variables 
