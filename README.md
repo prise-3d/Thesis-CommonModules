@@ -8,6 +8,7 @@ Project which contains dependencies used in few developed projects:
 - [Denoising autoencoder](https://github.com/prise-3d/Thesis-Denoising-autoencoder.git)
 - [Noise Detection attributes](https://github.com/prise-3d/Thesis-NoiseDetection-attributes.git)
 - [Noise Detection 26 attributes](https://github.com/prise-3d/Thesis-NoiseDetection-26-attributes.git)
+- [Noise Analysis](https://github.com/prise-3d/Thesis-NoiseAnalysis.git)
 
 ## Configuration file
 
@@ -24,4 +25,4 @@ git submodule add https://github.com/prise-3d/Thesis-CommonModules.git modules
 
 ## License
 
-[The MIT License](https://github.com/prise-3d/Thesis-CommonModules/blob/master/LICENSE)
+[The MIT License](LICENSE)
