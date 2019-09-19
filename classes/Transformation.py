@@ -1,6 +1,8 @@
 import os
 
 from ipfml.processing import reconstruction
+from ipfml.filters import convolution, kernels
+from ipfml import utils
 
 # Transformation class to store transformation method of image and get usefull information
 class Transformation():
@@ -23,6 +25,11 @@ class Transformation():
             n_components = self.param
             data = reconstruction.fast_ica(img, n_components)
 
+        if self.transformation == 'diff_filter':
+            w_size, h_size = list(map(int, self.param.split(',')))
+            # bilateral with window of size (`w_size`, `h_size`)
+            data = convolution.convolution2D(img, kernels.bilateral_diff, (w_size, h_size))
+            
         if self.transformation == 'static':
             # static content, we keep input as it is
             data = img
@@ -44,6 +51,10 @@ class Transformation():
         if self.transformation == 'fast_ica_reconstruction':
             n_components = self.param
             path = os.path.join(path, 'N' + str(n_components))
+
+        if self.transformation == 'diff_filter':
+            w_size, h_size = list(map(int, self.param.split(',')))
+            path = os.path.join(path, 'W_' + str(w_size)) + '_' + str(h_size)
 
         if self.transformation == 'static':
             # param contains image name to find for each scene
