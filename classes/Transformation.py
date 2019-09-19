@@ -1,5 +1,6 @@
 import os
 
+from ipfml.processing import transform
 from ipfml.processing import reconstruction
 from ipfml.filters import convolution, kernels
 from ipfml import utils
@@ -28,7 +29,8 @@ class Transformation():
         if self.transformation == 'diff_filter':
             w_size, h_size = list(map(int, self.param.split(',')))
             # bilateral with window of size (`w_size`, `h_size`)
-            data = convolution.convolution2D(img, kernels.bilateral_diff, (w_size, h_size))
+            lab_img = transform.get_LAB_L(img)
+            data = convolution.convolution2D(lab_img, kernels.bilateral_diff, (w_size, h_size))
             
         if self.transformation == 'static':
             # static content, we keep input as it is
