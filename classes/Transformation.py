@@ -71,7 +71,8 @@ class Transformation():
 
         if self.transformation == 'min_diff_filter':
             w_size, h_size = list(map(int, self.param.split(',')))
-            path = os.path.join(path, 'W_' + str(w_size)) + '_' + str(h_size)
+            w, h = list(map(int, self.size.split(',')))
+            path = os.path.join(path, 'W_' + str(w_size)) + '_' + str(h_size) + '_S_' + str(w) + '_' + str(h)
 
         if self.transformation == 'static':
             # param contains image name to find for each scene
