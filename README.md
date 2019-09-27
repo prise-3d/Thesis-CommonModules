@@ -23,6 +23,20 @@ There is few configuration files (`config` folder):
 git submodule add https://github.com/prise-3d/Thesis-CommonModules.git modules
 ```
 
+## Dataset information
+
+| ID | Name | Renderer | Number of Images |
+|---|---|---|---|
+| A | Appart1opt02 | maxwell | 89 |
+| B | Bureau1 | igloo | 200 |
+| C | Cendrier | | 25 |
+| D | Cuisine01 | maxwell | 116 |
+| E | EchecsBas | cycle| 200 |
+| F | PNDVuePlongeante | igloo | 800 |
+| G | SdbCentre | maxwell | 94 |
+| H | SdbDroite | maxwell | 94 |
+| I | Selles | cycle | 62 |
+
 ## License
 
 [The MIT License](LICENSE)
