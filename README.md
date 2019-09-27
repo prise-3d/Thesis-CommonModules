@@ -26,7 +26,7 @@ git submodule add https://github.com/prise-3d/Thesis-CommonModules.git modules
 ## Dataset information
 
 | ID | Name | Renderer | Number of Images |
-|---|---|---|---|
+|:---:|---:|---:|---:|
 | A | Appart1opt02 | maxwell | 89 |
 | B | Bureau1 | igloo | 200 |
 | C | Cendrier | | 25 |

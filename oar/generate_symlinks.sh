@@ -17,7 +17,7 @@ fi
 
 echo "Creating links into /scratch folder"
 
-scratch="scratch"
+scratch="/scratch"
 orval=$1
 path=$2
 
