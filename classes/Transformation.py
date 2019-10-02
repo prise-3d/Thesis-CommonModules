@@ -24,20 +24,23 @@ class Transformation():
         if self.transformation == 'svd_reconstruction':
             begin, end = list(map(int, self.param.split(',')))
             h, w = list(map(int, self.size.split(',')))
-            data = reconstruction.svd(img, [begin, end])
-            data = np.array(Image.fromarray(data).thumbnail((h, w)))
+            img_reconstructed = reconstruction.svd(img, [begin, end])
+            data_array = np.array(img_reconstructed, 'uint8')
+            data = np.array(Image.fromarray(data_array).thumbnail((h, w)))
 
         if self.transformation == 'ipca_reconstruction':
             n_components, batch_size = list(map(int, self.param.split(',')))
             h, w = list(map(int, self.size.split(',')))
-            data = reconstruction.ipca(img, n_components, batch_size)
-            data = np.array(Image.fromarray(data).thumbnail((h, w)))
+            img_reconstructed = reconstruction.ipca(img, n_components, batch_size)
+            data_array = np.array(img_reconstructed, 'uint8')
+            data = np.array(Image.fromarray(data_array).thumbnail((h, w)))
 
         if self.transformation == 'fast_ica_reconstruction':
             n_components = self.param
             h, w = list(map(int, self.size.split(',')))
-            data = reconstruction.fast_ica(img, n_components)
-            data = np.array(Image.fromarray(data).thumbnail((h, w)))
+            img_reconstructed = reconstruction.fast_ica(img, n_components)
+            data_array = np.array(img_reconstructed, 'uint8')
+            data = np.array(Image.fromarray(data_array).thumbnail((h, w)))
 
         if self.transformation == 'min_diff_filter':
             w_size, h_size = list(map(int, self.param.split(',')))
