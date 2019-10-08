@@ -26,21 +26,33 @@ class Transformation():
             h, w = list(map(int, self.size.split(',')))
             img_reconstructed = reconstruction.svd(img, [begin, end])
             data_array = np.array(img_reconstructed, 'uint8')
-            data = np.array(Image.fromarray(data_array).thumbnail((h, w)))
+
+            img_array = Image.fromarray(data_array)
+            img_array.thumbnail((h, w))
+
+            data = np.array(img_array)
 
         if self.transformation == 'ipca_reconstruction':
             n_components, batch_size = list(map(int, self.param.split(',')))
             h, w = list(map(int, self.size.split(',')))
             img_reconstructed = reconstruction.ipca(img, n_components, batch_size)
             data_array = np.array(img_reconstructed, 'uint8')
-            data = np.array(Image.fromarray(data_array).thumbnail((h, w)))
+            
+            img_array = Image.fromarray(data_array)
+            img_array.thumbnail((h, w))
+
+            data = np.array(img_array)
 
         if self.transformation == 'fast_ica_reconstruction':
             n_components = self.param
             h, w = list(map(int, self.size.split(',')))
             img_reconstructed = reconstruction.fast_ica(img, n_components)
             data_array = np.array(img_reconstructed, 'uint8')
-            data = np.array(Image.fromarray(data_array).thumbnail((h, w)))
+            
+            img_array = Image.fromarray(data_array)
+            img_array.thumbnail((h, w))
+
+            data = np.array(img_array)
 
         if self.transformation == 'min_diff_filter':
             w_size, h_size = list(map(int, self.param.split(',')))
@@ -48,13 +60,13 @@ class Transformation():
 
             # bilateral with window of size (`w_size`, `h_size`)
             lab_img = transform.get_LAB_L(img)
-
-            lab_img = Image.fromarray(lab_img)
-            lab_img.thumbnail((h, w))
-
-            diff_img = convolution.convolution2D(lab_img, kernels.min_bilateral_diff, (w_size, h_size))
-
-            data = np.array(diff_img*255, 'uint8')
+    
+            img_filter = convolution.convolution2D(lab_img, kernels.min_bilateral_diff, (w_size, h_size))
+            diff_array = np.array(img_filter*255, 'uint8')
+            diff_img = Image.fromarray(diff_array)
+            diff_img.thumbnail((h, w))
+        
+            data = np.array(diff_img)
             
         if self.transformation == 'static':
             # static content, we keep input as it is
