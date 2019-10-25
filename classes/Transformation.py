@@ -7,8 +7,12 @@ from ipfml.processing import transform
 from ipfml.processing import reconstruction
 from ipfml.filters import convolution, kernels
 from ipfml import utils
+import cv2
 
 from PIL import Image
+
+# modules imports
+from ..utils import data as functions
 
 
 # Transformation class to store transformation method of image and get usefull information
@@ -54,19 +58,33 @@ class Transformation():
 
             data = np.array(img_array)
 
-        if self.transformation == 'min_diff_filter':
-            w_size, h_size, stride = list(map(int, self.param.split(',')))
+        if self.transformation == 'sobel_based_filter':
+            k_size, p_limit = list(map(int, self.param.split(',')))
             h, w = list(map(int, self.size.split(',')))
 
-            # bilateral with window of size (`w_size`, `h_size`)
             lab_img = transform.get_LAB_L(img)
-    
-            img_filter = convolution.convolution2D(lab_img, kernels.min_bilateral_diff, (w_size, h_size), stride)
-            diff_array = np.array(img_filter*255, 'uint8')
-            diff_img = Image.fromarray(diff_array)
-            diff_img.thumbnail((h, w))
+
+            weight, height = lab_img.shape
+
+            sobelx = cv2.Sobel(lab_img, cv2.CV_64F, 1, 0, ksize=k_size)
+            sobely = cv2.Sobel(lab_img, cv2.CV_64F, 0, 1,ksize=k_size)
+
+            sobel_mag = np.array(np.hypot(sobelx, sobely), 'uint8')  # magnitude
+            sobel_mag_limit = functions.remove_pixel(sobel_mag, p_limit)
+
+            # use distribution value of pixel to fill `0` values
+            sobel_mag_limit_without_0 = [x for x in sobel_mag_limit.reshape((weight*height)) if x != 0]  
+            distribution = functions.distribution_from_data(sobel_mag_limit_without_0)
+            min_value = int(min(sobel_mag_limit_without_0))
+            l = lambda: functions.get_random_value(distribution) + min_value
+            img_reconstructed = functions.fill_image_with_rand_value(sobel_mag_limit, l, 0)
+            
+            img_reconstructed_norm = utils.normalize_2D_arr(img_reconstructed)
+            img_reconstructed_norm = np.array(img_reconstructed_norm*255, 'uint8')
+            sobel_reconstructed = Image.fromarray(img_reconstructed_norm)
+            sobel_reconstructed.thumbnail((h, w))
         
-            data = np.array(diff_img)
+            data = np.array(sobel_reconstructed)
             
         if self.transformation == 'static':
             # static content, we keep input as it is
@@ -97,6 +115,11 @@ class Transformation():
             w_size, h_size, stride = list(map(int, self.param.split(',')))
             w, h = list(map(int, self.size.split(',')))
             path = os.path.join(path, 'W_' + str(w_size)) + '_' + str(h_size) + '_Stride_' + str(stride) + '_S_' + str(w) + '_' + str(h)
+
+        if self.transformation == 'sobel_based_filter':
+            k_size, p_limit = list(map(int, self.param.split(',')))
+            h, w = list(map(int, self.size.split(',')))
+            path = os.path.join(path, 'K_' + str(k_size)) + '_L' + str(p_limit) + '_S_' + str(w) + '_' + str(h)
 
         if self.transformation == 'static':
             # param contains image name to find for each scene
