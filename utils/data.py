@@ -1,7 +1,12 @@
+# main imports
 import os
+import numpy as np
+import random
 
+# image processing imports
 from PIL import Image
 
+# modules imports
 from ..config.cnn_config import *
 
 
@@ -80,3 +85,57 @@ def augmented_data_image(block, output_folder, prefix_image_name):
 
             if not os.path.exists(output_reconstructed_path):
                 rotated_output_img.save(output_reconstructed_path)
+
+
+def remove_pixel(img, limit):
+    
+    width, height = img.shape
+    
+    output = np.zeros((width, height))
+    
+    for i in range(width):
+        for j in range(height):
+            
+            if img[i,j] <= limit:
+                output[i,j] = img[i,j]
+                
+    return output
+
+
+def get_random_value(distribution):
+    rand = random.uniform(0, 1)
+    prob_sum = 0.
+    
+    for id, prob in enumerate(distribution):
+        
+        prob_sum += prob
+        
+        if prob_sum >= rand:
+            return id
+        
+    return len(distribution) - 1
+
+
+def distribution_from_data(data):
+    
+    occurences = np.array([data.count(x) for x in set(data)])
+    max_occurences = sum(occurences)
+    
+    return occurences / max_occurences
+
+
+def fill_image_with_rand_value(img, func, value_to_replace):
+    
+    width, height = img.shape
+    
+    output = np.zeros((width, height))
+    
+    for i in range(width):
+        for j in range(height):
+            
+            if img[i,j] == value_to_replace:
+                output[i, j] = func()
+            else:
+                output[i, j] = img[i, j]
+                
+    return output
