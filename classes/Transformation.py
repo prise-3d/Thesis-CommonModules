@@ -8,11 +8,12 @@ from ipfml.processing import reconstruction
 from ipfml.filters import convolution, kernels
 from ipfml import utils
 import cv2
+from skimage.restoration import denoise_nl_means, estimate_sigma
 
 from PIL import Image
 
 # modules imports
-from ..utils import data as functions
+#from ..utils import data as functions
 
 
 # Transformation class to store transformation method of image and get usefull information
@@ -85,6 +86,32 @@ class Transformation():
             sobel_reconstructed.thumbnail((h, w))
         
             data = np.array(sobel_reconstructed)
+
+        if self.transformation == 'nl_mean_noise_mask':
+            patch_size, patch_distance = list(map(int, self.param.split(',')))
+            h, w = list(map(int, self.size.split(',')))
+
+            img = np.array(img)
+            sigma_est = np.mean(estimate_sigma(img, multichannel=True))
+    
+            patch_kw = dict(patch_size=patch_size,      # 5x5 patches
+                            patch_distance=patch_distance,  # 13x13 search area
+                            multichannel=True)
+
+            # slow algorithm
+            denoise = denoise_nl_means(img, h=0.8 * sigma_est, sigma=sigma_est,
+                                    fast_mode=False,
+                                    **patch_kw)
+            
+            denoise = np.array(denoise, 'uint8')
+            noise_mask = np.abs(denoise - img)
+            
+            data_array = np.array(noise_mask, 'uint8')
+            
+            img_array = Image.fromarray(data_array)
+            img_array.thumbnail((h, w))
+
+            data = np.array(img_array)
             
         if self.transformation == 'static':
             # static content, we keep input as it is
@@ -120,6 +147,11 @@ class Transformation():
             k_size, p_limit = list(map(int, self.param.split(',')))
             h, w = list(map(int, self.size.split(',')))
             path = os.path.join(path, 'K_' + str(k_size)) + '_L' + str(p_limit) + '_S_' + str(w) + '_' + str(h)
+
+        if self.transformation == 'nl_mean_noise_mask':
+            patch_size, patch_distance = list(map(int, self.param.split(',')))
+            h, w = list(map(int, self.size.split(',')))
+            path = os.path.join(path, 'S' + str(patch_size)) + '_D' + str(patch_distance) + '_S_' + str(w) + '_' + str(h)
 
         if self.transformation == 'static':
             # param contains image name to find for each scene
