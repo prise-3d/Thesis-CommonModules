@@ -13,7 +13,7 @@ from skimage.restoration import denoise_nl_means, estimate_sigma
 from PIL import Image
 
 # modules imports
-#from ..utils import data as functions
+from ..utils import data as functions
 
 
 # Transformation class to store transformation method of image and get usefull information
