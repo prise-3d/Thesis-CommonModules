@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 # image processing imports
-from ipfml.processing import transform
+from ipfml.processing import transform, compression
 from ipfml.processing import reconstruction
 from ipfml.filters import convolution, kernels
 from ipfml import utils
@@ -15,6 +15,32 @@ from PIL import Image
 # modules imports
 from ..utils import data as functions
 
+def _compute_relative_error(ref_sv, k_sv):
+    ref = np.sqrt(np.sum(np.square(ref_sv)))
+    k = np.sqrt(np.sum(np.square(k_sv)))
+
+    return k / ref
+
+def _find_n_components(block, e=0.1):
+
+    s = transform.get_LAB_L_SVD_s(block)
+    
+    errors = []
+    found = False
+    k_components = None
+    
+    for i in range(len(s)):
+        
+        #Ak = reconstruction.svd(img, [0, i])
+        #error = compute_relative_error_matrix(A, Ak)
+        error = _compute_relative_error(s, s[i:])
+        errors.append(error)
+        
+        if error < e and not found:
+            k_components = (i + 1)
+            found = True
+            
+    return (k_components, errors)
 
 # Transformation class to store transformation method of image and get usefull information
 class Transformation():
@@ -30,6 +56,20 @@ class Transformation():
             begin, end = list(map(int, self.param.split(',')))
             h, w = list(map(int, self.size.split(',')))
             img_reconstructed = reconstruction.svd(img, [begin, end])
+            data_array = np.array(img_reconstructed, 'uint8')
+
+            img_array = Image.fromarray(data_array)
+            img_array.thumbnail((h, w))
+
+            data = np.array(img_array)
+
+        if self.transformation == 'svd_reconstruction_dyn':
+            epsilon, end = list(map(float, self.param.split(',')))
+            h, w = list(map(int, self.size.split(',')))
+
+            k, _ = _find_n_components(img, e=epsilon)
+
+            img_reconstructed = reconstruction.svd(img, [k, int(end)])
             data_array = np.array(img_reconstructed, 'uint8')
 
             img_array = Image.fromarray(data_array)
@@ -126,32 +166,37 @@ class Transformation():
         if self.transformation == 'svd_reconstruction':
             begin, end = list(map(int, self.param.split(',')))
             w, h = list(map(int, self.size.split(',')))
-            path = os.path.join(path, str(begin) + '_' + str(end)) + '_S_' + str(w) + '_' + str(h)
+            path = os.path.join(path, str(begin) + '_' + str(end) + '_S_' + str(w) + '_' + str(h))
+
+        if self.transformation == 'svd_reconstruction_dyn':
+            epsilon, end = list(map(float, self.param.split(',')))
+            w, h = list(map(int, self.size.split(',')))
+            path = os.path.join(path, str(epsilon) + '_' + str(int(end)) + '_S_' + str(w) + '_' + str(h))
 
         if self.transformation == 'ipca_reconstruction':
             n_components, batch_size = list(map(int, self.param.split(',')))
             w, h = list(map(int, self.size.split(',')))
-            path = os.path.join(path, 'N' + str(n_components) + '_' + str(batch_size)) + '_S_' + str(w) + '_' + str(h)
+            path = os.path.join(path, 'N' + str(n_components) + '_' + str(batch_size) + '_S_' + str(w) + '_' + str(h))
 
         if self.transformation == 'fast_ica_reconstruction':
             n_components = self.param
             w, h = list(map(int, self.size.split(',')))
-            path = os.path.join(path, 'N' + str(n_components)) + '_S_' + str(w) + '_' + str(h)
+            path = os.path.join(path, 'N' + str(n_components) + '_S_' + str(w) + '_' + str(h))
 
         if self.transformation == 'min_diff_filter':
             w_size, h_size, stride = list(map(int, self.param.split(',')))
             w, h = list(map(int, self.size.split(',')))
-            path = os.path.join(path, 'W_' + str(w_size)) + '_' + str(h_size) + '_Stride_' + str(stride) + '_S_' + str(w) + '_' + str(h)
+            path = os.path.join(path, 'W_' + str(w_size) + '_' + str(h_size) + '_Stride_' + str(stride) + '_S_' + str(w) + '_' + str(h))
 
         if self.transformation == 'sobel_based_filter':
             k_size, p_limit = list(map(int, self.param.split(',')))
             h, w = list(map(int, self.size.split(',')))
-            path = os.path.join(path, 'K_' + str(k_size)) + '_L' + str(p_limit) + '_S_' + str(w) + '_' + str(h)
+            path = os.path.join(path, 'K_' + str(k_size) + '_L' + str(p_limit) + '_S_' + str(w) + '_' + str(h))
 
         if self.transformation == 'nl_mean_noise_mask':
             patch_size, patch_distance = list(map(int, self.param.split(',')))
             h, w = list(map(int, self.size.split(',')))
-            path = os.path.join(path, 'S' + str(patch_size)) + '_D' + str(patch_distance) + '_S_' + str(w) + '_' + str(h)
+            path = os.path.join(path, 'S' + str(patch_size) + '_D' + str(patch_distance) + '_S_' + str(w) + '_' + str(h))
 
         if self.transformation == 'static':
             # param contains image name to find for each scene
